@@ -19,7 +19,20 @@
                 "vscjava.vscode-java-test"
             ],
             "settings": {
-                "java.configuration.updateBuildConfiguration": "automatic"
+                "java.configuration.updateBuildConfiguration": "automatic",
+                "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+                "github.copilot.chat.runCommand.enabled": true
+            }
+        },
+        "copilot": {
+            "mcpServers": {
+                "playwright": {
+                    "command": "npx",
+                    "args": [
+                        "-y",
+                        "@executeautomation/playwright-mcp-server"
+                    ]
+                }
             }
         }
     },

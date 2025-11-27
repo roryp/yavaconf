@@ -34,13 +34,6 @@ mvn test                   # Run tests only
 mvn spring-boot:run        # Start the application
 ```
 
-## Server Management
-
-Always kill existing processes before starting:
-```bash
-lsof -ti:8080 | xargs kill -9 2>/dev/null
-```
-
 Wait 3-5 seconds after starting before making HTTP requests.
 
 ## API Endpoints
@@ -80,9 +73,9 @@ Before considering any task complete:
 - Uses devcontainer with Microsoft Java 21 image
 - Port 8080 is forwarded for local development
 - Do NOT add `postCreateCommand` or `postStartCommand` to devcontainer.json
+- Playwright MCP server enabled for browser-based testing via Copilot
 
 ## Troubleshooting
 
-- Port already in use: Run `lsof -ti:8080 | xargs kill -9`
 - Build failures: Run `mvn clean` then rebuild
 - Test failures: Check Spring documentation for actual `@RequestParam` behavior vs expected
