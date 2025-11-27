@@ -15,7 +15,8 @@
                 "vscjava.vscode-spring-initializr",
                 "vscjava.vscode-spring-boot-dashboard",
                 "GitHub.copilot",
-                "GitHub.copilot-chat"
+                "GitHub.copilot-chat",
+                "vscjava.vscode-java-test"
             ],
             "settings": {
                 "java.configuration.updateBuildConfiguration": "automatic"

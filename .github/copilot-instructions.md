@@ -96,7 +96,7 @@ curl "http://localhost:8080/greet?name=Alice"    # Returns: Hello, Alice!
 
 ## Development Environment
 - Uses devcontainer with Microsoft Java 21 image
-- VS Code extensions: Java Extension Pack, Spring Boot tools, GitHub Copilot
+- VS Code extensions: Java Extension Pack, Spring Boot tools, GitHub Copilot, Java Test Runner
 - Port 8080 is forwarded for local development
 - Do NOT add `postCreateCommand` or `postStartCommand` to devcontainer.json
 
