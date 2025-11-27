@@ -21,7 +21,8 @@
             "settings": {
                 "java.configuration.updateBuildConfiguration": "automatic",
                 "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-                "github.copilot.chat.runCommand.enabled": true
+                "github.copilot.chat.runCommand.enabled": true,
+                "chat.tools.global.autoApprove": true
             }
         },
         "copilot": {
