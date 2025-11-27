@@ -13,7 +13,9 @@
                 "vscjava.vscode-java-pack",
                 "vmware.vscode-spring-boot",
                 "vscjava.vscode-spring-initializr",
-                "vscjava.vscode-spring-boot-dashboard"
+                "vscjava.vscode-spring-boot-dashboard",
+                "GitHub.copilot",
+                "GitHub.copilot-chat"
             ],
             "settings": {
                 "java.configuration.updateBuildConfiguration": "automatic"
