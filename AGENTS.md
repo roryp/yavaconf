@@ -1,6 +1,6 @@
 # GitHub Copilot Agent Guide for Spring Hello World
 
-This document explains how to use GitHub Copilot as an AI agent to develop, test, and maintain this Spring Boot application.
+This document explains how to use GitHub Copilot as an AI agent to develop, test, and maintain this Spring Boot 4.0.0 application.
 
 ## What is Agent Mode?
 
@@ -112,8 +112,8 @@ Intentionally break the HelloController by removing the @RestController annotati
 ### Use Multi-Step Instructions
 ```
 1. Add a /goodbye endpoint that returns "Goodbye, {name}!"
-2. Create unit tests using @WebMvcTest
-3. Create integration tests using @SpringBootTest
+2. Create unit tests using @WebMvcTest (import from org.springframework.boot.webmvc.test.autoconfigure)
+3. Create integration tests using @SpringBootTest with @AutoConfigureMockMvc
 4. Run mvn test to verify all tests pass
 5. Start the app and test with curl
 ```
@@ -124,11 +124,12 @@ The agent follows rules defined in `.github/copilot-instructions.md`:
 
 | Aspect | Standard |
 |--------|----------|
-| Framework | Spring Boot 3.5.8 |
+| Framework | Spring Boot 4.0.0 |
 | Java Version | 21 |
 | Package | `com.example.helloworld` |
-| Unit Tests | `@WebMvcTest` with MockMvc |
-| Integration Tests | `@SpringBootTest` with `@AutoConfigureMockMvc` or `TestRestTemplate` |
+| Main Starter | `spring-boot-starter-webmvc` |
+| Unit Tests | `@WebMvcTest` with MockMvc (from `org.springframework.boot.webmvc.test.autoconfigure`) |
+| Integration Tests | `@SpringBootTest` with `@AutoConfigureMockMvc` or `TestRestTemplate` + `@AutoConfigureTestRestTemplate` |
 | Validation | Run `mvn clean install` after changes |
 
 ## Troubleshooting
@@ -216,4 +217,6 @@ agent = ChatAgent(
 
 - [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
 - [Microsoft Agent Framework](https://github.com/microsoft/agent-framework)
-- [Spring Boot Reference](https://docs.spring.io/spring-boot/docs/current/reference/html/)
+- [Spring Boot 4.0.0 Reference](https://docs.spring.io/spring-boot/4.0.0/reference/)
+- [Spring Boot 4.0.0 Migration Guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide)
+- [Spring Boot 4.0.0 Modularization Blog](https://spring.io/blog/2025/10/28/modularizing-spring-boot)
