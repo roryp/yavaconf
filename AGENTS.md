@@ -1,222 +1,77 @@
-# GitHub Copilot Agent Guide for Spring Hello World
+# AGENTS.md
 
-This document explains how to use GitHub Copilot as an AI agent to develop, test, and maintain this Spring Boot 4.0.0 application.
+This is a Spring Boot 4.0.0 REST API project using Java 21 with Maven. Spring Boot 4.0.0 uses a modular architecture with renamed starters and relocated test packages.
 
-## What is Agent Mode?
+## Dev environment setup
 
-Agent mode allows GitHub Copilot to autonomously perform multi-step tasks like:
-- Generating code across multiple files
-- Running terminal commands
-- Fixing build/test failures iteratively
-- Exploring and understanding your codebase
+- Java 21 is required (devcontainer provides this automatically)
+- Port 8080 is forwarded for local development
+- Do NOT add `postCreateCommand` or `postStartCommand` to devcontainer.json
 
-## Prerequisites
+## Build and test commands
 
-1. **VS Code** with GitHub Copilot extension installed
-2. **GitHub Copilot Chat** enabled
-3. Active GitHub Copilot subscription
+| Command | Purpose |
+|---------|---------|
+| `mvn clean install` | Build project and run all tests (use this to validate changes) |
+| `mvn test` | Run tests only |
+| `mvn spring-boot:run` | Start the application on port 8080 |
+| `mvn clean` | Clear target directory if build issues occur |
 
-## Using Agent Mode
+Wait 3-5 seconds after starting before making HTTP requests.
 
-### Starting Agent Mode
+## Testing instructions
 
-In VS Code, open the Copilot Chat panel and use the **Agent** mode (not Ask or Edit mode). You can:
-- Click the mode selector dropdown and choose "Agent"
-- Or start your prompt with complex, multi-step requests
+- Run `mvn clean install` after any code change to verify compilation and tests pass
+- All 15 tests must pass before considering a task complete
+- Test the running application with curl:
+  - `curl http://localhost:8080/` → returns `Hello, World!`
+  - `curl http://localhost:8080/greet` → returns `Hello, World!`
+  - `curl "http://localhost:8080/greet?name=Alice"` → returns `Hello, Alice!`
 
-### Example Prompts for This Project
+## Code style and conventions
 
-#### 1. Generate Missing Project Files
-```
-Generate all the Spring Boot project files as specified in copilot-instructions.md, then run mvn clean install to verify everything works.
-```
+### Controllers
+- Use `@RestController` for REST endpoints
+- Use `@GetMapping` for HTTP GET mappings
+- Use `@RequestParam` with `defaultValue` for optional parameters
+- Package: `com.example.helloworld`
 
-#### 2. Add a New Endpoint
-```
-Add a new GET endpoint /health that returns {"status": "UP"} as JSON. Create the model class, update the controller, add unit tests and integration tests, then run all tests.
-```
+### Testing (Spring Boot 4.0.0 specific)
+- Unit tests: Use `@WebMvcTest` from `org.springframework.boot.webmvc.test.autoconfigure`
+- Integration tests with MockMvc: Use `@SpringBootTest` + `@AutoConfigureMockMvc` from `org.springframework.boot.webmvc.test.autoconfigure`
+- Integration tests with TestRestTemplate: Use `@SpringBootTest` + `@AutoConfigureTestRestTemplate` from `org.springframework.boot.resttestclient.autoconfigure`
+- Import `TestRestTemplate` from `org.springframework.boot.resttestclient`
+- Use `@DisplayName` for descriptive test names
+- Follow naming convention: `methodName_condition_expectedResult`
 
-#### 3. Fix Build Failures
-```
-Run mvn clean install and fix any compilation or test failures.
-```
+## Spring Boot 4.0.0 dependency notes
 
-#### 4. Add Request Validation
-```
-Add input validation to the /greet endpoint to reject names longer than 50 characters. Return a 400 Bad Request with an error message. Add appropriate tests.
-```
+The project uses these Spring Boot 4.0.0 modular dependencies:
 
-#### 5. Debug Test Failures
-```
-Run the tests and explain why any failing tests are failing, then fix them.
-```
+| Dependency | Purpose |
+|------------|---------|
+| `spring-boot-starter-webmvc` | Main web starter (replaces `spring-boot-starter-web`) |
+| `spring-boot-starter-test` | Core test support |
+| `spring-boot-starter-webmvc-test` | MockMvc and `@WebMvcTest` support |
+| `spring-boot-resttestclient` | `TestRestTemplate` support |
 
-## Testing the Agent
+### Package migration from Spring Boot 3.x
 
-### Test 1: Verify Project Build
+| Spring Boot 3.x | Spring Boot 4.0.0 |
+|-----------------|-------------------|
+| `org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest` | `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest` |
+| `org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc` | `org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc` |
+| `org.springframework.boot.test.web.client.TestRestTemplate` | `org.springframework.boot.resttestclient.TestRestTemplate` |
 
-Ask the agent:
-```
-Run mvn clean install and show me the results
-```
+## API endpoints
 
-**Expected outcome**: Build succeeds with all tests passing.
+| Method | Path | Parameters | Response |
+|--------|------|------------|----------|
+| GET | `/` | None | `Hello, World!` |
+| GET | `/greet` | `name` (optional, default: "World") | `Hello, {name}!` |
 
-### Test 2: Test Endpoints
+## PR instructions
 
-Ask the agent:
-```
-Start the application with mvn spring-boot:run, wait 5 seconds, then test all endpoints with curl:
-- GET http://localhost:8080/
-- GET http://localhost:8080/greet
-- GET http://localhost:8080/greet?name=Alice
-```
-
-**Expected outcomes**:
-- `/` returns `Hello, World!`
-- `/greet` returns `Hello, World!`
-- `/greet?name=Alice` returns `Hello, Alice!`
-
-### Test 3: Code Generation
-
-Ask the agent:
-```
-Add a POST /echo endpoint that accepts a JSON body with a "message" field and returns the same message. Include unit and integration tests.
-```
-
-**Expected outcome**: Agent creates/modifies the controller, adds tests, and runs them to verify.
-
-### Test 4: Iterative Fixing
-
-Ask the agent:
-```
-Intentionally break the HelloController by removing the @RestController annotation, then ask the agent to run tests and fix any issues.
-```
-
-**Expected outcome**: Agent identifies the missing annotation and fixes it.
-
-## Best Practices for Agent Prompts
-
-### Be Specific
-❌ "Add tests"  
-✅ "Add unit tests for the /greet endpoint covering: default name, custom name, and empty name parameter"
-
-### Request Verification
-❌ "Create a new endpoint"  
-✅ "Create a new endpoint and run tests to verify it works"
-
-### Provide Context
-❌ "Fix the bug"  
-✅ "The /greet endpoint returns 'Hello, !' when name is empty. Fix it to return 'Hello, World!' instead"
-
-### Use Multi-Step Instructions
-```
-1. Add a /goodbye endpoint that returns "Goodbye, {name}!"
-2. Create unit tests using @WebMvcTest (import from org.springframework.boot.webmvc.test.autoconfigure)
-3. Create integration tests using @SpringBootTest with @AutoConfigureMockMvc
-4. Run mvn test to verify all tests pass
-5. Start the app and test with curl
-```
-
-## Project-Specific Instructions
-
-The agent follows rules defined in `.github/copilot-instructions.md`:
-
-| Aspect | Standard |
-|--------|----------|
-| Framework | Spring Boot 4.0.0 |
-| Java Version | 21 |
-| Package | `com.example.helloworld` |
-| Main Starter | `spring-boot-starter-webmvc` |
-| Unit Tests | `@WebMvcTest` with MockMvc (from `org.springframework.boot.webmvc.test.autoconfigure`) |
-| Integration Tests | `@SpringBootTest` with `@AutoConfigureMockMvc` or `TestRestTemplate` + `@AutoConfigureTestRestTemplate` |
-| Validation | Run `mvn clean install` after changes |
-
-## Troubleshooting
-
-### Agent Not Following Instructions
-Ensure `.github/copilot-instructions.md` exists and contains project-specific rules.
-
-### Build Failures Persist
-Ask:
-```
-Run mvn clean to clear the target directory, then mvn install with full output
-```
-
-### Tests Timing Out
-For integration tests that start the server:
-```
-Increase the test timeout or add @Timeout annotation
-```
-
-## Advanced: Creating an AI Agent with Microsoft Agent Framework
-
-For building custom AI agents (not GitHub Copilot), you can use the Microsoft Agent Framework:
-
-### Python Setup
-
-```bash
-pip install agent-framework-azure-ai --pre
-```
-
-> **Note**: The `--pre` flag is required while Agent Framework is in preview.
-
-### Basic Agent Example
-
-```python
-from agent_framework import ChatAgent
-from agent_framework.openai import OpenAIChatClient
-from openai import AsyncOpenAI
-
-async def create_agent():
-    openai_client = AsyncOpenAI(
-        base_url="https://models.github.ai/inference",
-        api_key="<GITHUB_TOKEN>",
-    )
-    chat_client = OpenAIChatClient(
-        async_client=openai_client,
-        model_id="gpt-4o"
-    )
-    agent = ChatAgent(
-        chat_client=chat_client,
-        name="SpringHelper",
-        instructions="You are a helpful Spring Boot assistant.",
-    )
-    
-    async for chunk in agent.run_stream("How do I create a REST controller?"):
-        if chunk.text:
-            print(chunk.text, end="", flush=True)
-```
-
-### Agent with Tools
-
-```python
-from typing import Annotated
-
-def run_maven(
-    command: Annotated[str, "Maven command like 'test' or 'clean install'"],
-) -> str:
-    """Run a Maven command on the project."""
-    import subprocess
-    result = subprocess.run(
-        ["mvn", command], 
-        capture_output=True, 
-        text=True
-    )
-    return result.stdout + result.stderr
-
-agent = ChatAgent(
-    chat_client=chat_client,
-    name="SpringHelper",
-    instructions="You help with Spring Boot development.",
-    tools=[run_maven],
-)
-```
-
-## Resources
-
-- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
-- [Microsoft Agent Framework](https://github.com/microsoft/agent-framework)
-- [Spring Boot 4.0.0 Reference](https://docs.spring.io/spring-boot/4.0.0/reference/)
-- [Spring Boot 4.0.0 Migration Guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide)
-- [Spring Boot 4.0.0 Modularization Blog](https://spring.io/blog/2025/10/28/modularizing-spring-boot)
+- Run `mvn clean install` and ensure all 15 tests pass before committing
+- Test endpoints manually with curl after starting the application
+- Update tests when adding or modifying endpoints
