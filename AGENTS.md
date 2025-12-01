@@ -55,14 +55,6 @@ The project uses these Spring Boot 4.0.0 modular dependencies:
 | `spring-boot-starter-webmvc-test` | MockMvc and `@WebMvcTest` support |
 | `spring-boot-resttestclient` | `TestRestTemplate` support |
 
-### Package migration from Spring Boot 3.x
-
-| Spring Boot 3.x | Spring Boot 4.0.0 |
-|-----------------|-------------------|
-| `org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest` | `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest` |
-| `org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc` | `org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc` |
-| `org.springframework.boot.test.web.client.TestRestTemplate` | `org.springframework.boot.resttestclient.TestRestTemplate` |
-
 ## API endpoints
 
 | Method | Path | Parameters | Response |
